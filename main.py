@@ -2,7 +2,7 @@ from dash import Dash, html, dcc, Input, Output, ctx
 import plotly.graph_objects as go
 from xml_parser import PreferenceVoteParser
 
-URL = "https://www.volby.cz/pls/ps2021/vysledky_kandid"
+URL = "https://www.volby.cz/appdata/ps2025/odata/vysledky_kandid.xml"
 
 # Initialize PreferenceVoteParser and cached preference data
 auto_pvp = PreferenceVoteParser(url=URL)
@@ -22,7 +22,7 @@ region_options = list(fetch_preference_data().keys())
 
 
 def default_region() -> str:
-    return "Plzeňský" if "Plzeňský" in region_options else region_options[0]
+    return region_options[0]
 
 
 def build_graphs_for_selection(selected_region: str, party_num: int, preference_data):
@@ -90,7 +90,7 @@ def build_graphs_for_selection(selected_region: str, party_num: int, preference_
 
 
 def default_party_num() -> int:
-    return 20
+    return 11
 
 
 app = Dash(__name__)
