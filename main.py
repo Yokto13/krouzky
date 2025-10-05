@@ -116,6 +116,7 @@ app.layout = html.Div([
         dcc.Input(id="party-num-input", type="number", value=initial_party, min=0, step=1)
     ]),
     html.Button("Refresh Data", id="refresh-button", n_clicks=0),
+    dcc.Interval(id="refresh-interval", interval=60_000, n_intervals=0),
     html.Div(id="graphs", children=initial_graphs)
 ])
 
@@ -125,15 +126,16 @@ app.layout = html.Div([
         Input("region-dropdown", "value"),
         Input("party-num-input", "value"),
         Input("refresh-button", "n_clicks"),
+        Input("refresh-interval", "n_intervals"),
     ],
 )
-def update_graphs(selected_region, party_num, refresh_clicks):
+def update_graphs(selected_region, party_num, refresh_clicks, refresh_intervals):
     try:
         party_key = int(party_num)
     except (TypeError, ValueError):
         party_key = default_party_num()
 
-    force_reload = ctx.triggered_id == "refresh-button"
+    force_reload = ctx.triggered_id in {"refresh-button", "refresh-interval"}
     preference_data = fetch_preference_data(force_reload=force_reload)
 
     graphs, label = build_graphs_for_selection(selected_region, party_key, preference_data)
